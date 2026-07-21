@@ -914,6 +914,7 @@ export const ANALYSIS_PROMPT_VERSION = "analysis-prompt-v1" as const;
 export const REAL_ANALYSIS_VERSION = "real-analysis-v1" as const;
 export const FIXTURE_ANALYSIS_VERSION = "fixture-analysis-v1" as const;
 export const CODEX_CLI_VERSION = "0.139.0" as const;
+export const CODEX_MODEL = "gpt-5.6-sol" as const;
 export const MODEL_BACKEND = "codex-cli-chatgpt" as const;
 export const MODEL_AUTH_MODE = "chatgpt-subscription" as const;
 

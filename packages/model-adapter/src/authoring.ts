@@ -13,6 +13,7 @@ import path from "node:path";
 import {
 	AuthoringAttemptRecordSchema,
 	AuthoringErrorCodeSchema,
+	CODEX_MODEL,
 	M5_MONONYM_ASSERTION_FRAGMENT,
 	M5_MONONYM_ASSERTION_ID,
 	M5_TEST_COMMAND_ARGV_DIGEST,
@@ -440,6 +441,8 @@ async function runAuthoring(
 				"exec",
 				"--ephemeral",
 				"--json",
+				"--model",
+				CODEX_MODEL,
 				"--sandbox",
 				"read-only",
 				"--ignore-user-config",

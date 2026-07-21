@@ -2,7 +2,7 @@ import { access, chmod, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { AnalysisReportSchema } from "@roveproof/contracts";
+import { AnalysisReportSchema, CODEX_MODEL } from "@roveproof/contracts";
 import {
   AnalysisUnavailableError,
   analyzeEvidence,
@@ -47,7 +47,7 @@ describe("evidence analyzer", () => {
       backend: "codex-cli-chatgpt",
       authMode: "chatgpt-subscription",
       cliVersion: "0.139.0",
-      model: null,
+      model: CODEX_MODEL,
       terminalStatus: "turn.completed",
       retryCount: 0,
       toolingRevision: "a".repeat(64),
@@ -61,7 +61,7 @@ describe("evidence analyzer", () => {
       "exec", "--ephemeral", "--json", "--sandbox", "read-only",
       "--ignore-user-config", "--ignore-rules", "--disable", "shell_tool",
     ]));
-    expect(invocation?.args).not.toContain("--model");
+    expect(invocation?.args).toEqual(expect.arrayContaining(["--model", CODEX_MODEL]));
     expect(invocation?.env.SECRET_TOKEN).toBeUndefined();
     expect(invocation?.stdin).toContain("EVIDENCE_DOSSIER_JSON");
     expect(invocation?.args.filter((value) => value === "--image")).toHaveLength(2);
