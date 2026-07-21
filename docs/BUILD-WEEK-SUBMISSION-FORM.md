@@ -74,7 +74,7 @@ typescript, node.js, next.js, react, playwright, chromium, docker, zod, vitest, 
 ### "Try it out" links
 ```
 GitHub repo:  https://github.com/adenaufal/roveproof
-Landing page: [TODO: paste deployed URL of landing/index.html, if hosted]
+Landing page: https://roveproof.pages.dev
 ```
 
 ### Image gallery  *(up to 15, 3:2)*
