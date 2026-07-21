@@ -118,11 +118,11 @@ Roveproof runs locally from a clean tree — no hosted login required; judges us
 Full step-by-step operator flow (login, preflight, reset, baseline, analyze, repair, verify, approve) is in README.md under "End-to-end operator flow".
 ```
 
-### /feedback Session ID (where the majority of the project was worked on)
+### /feedback Session ID (from your primary Codex build thread)
 ```
-no-active-thread-019f851e-7144-75c0-bbcb-8c794e3adf5c
+019f85b7-c1d0-7643-ae17-363d6ef18086
 ```
-Note: the `no-active-thread-` prefix suggests `/feedback` was run with no active Codex thread open. If a different Codex session holds the bulk of the work, grab that one's ID instead.
+This is the Codex thread where GPT-5.6 implemented the model pin and the Windows lease fix (commits `039093e`, `ab34010`). Honest note: much of Roveproof was built in another harness, so answer this field as your primary Codex build thread, not "where the majority was worked on," if the form's wording pushes you to overclaim.
 
 ### If your project is a plugin or dev tool — installation, supported platforms, testing
 ```
@@ -168,7 +168,7 @@ Dashboard (fixture control plane, loopback only):
 ---
 
 ## Model note (GPT-5.6)
-You confirmed the Codex session ran **GPT-5.6**, so the story and README say so directly. One thing to know if a judge reads the code closely: Roveproof intentionally does **not** pass `--model` (`analyzer.ts`, `authoring.ts`), and records `model: null` rather than asserting an identifier the CLI's JSONL never emitted (`ARCHITECTURE.md`). That's a deliberate "don't guess" design choice, not an omission — the running session's model is GPT-5.6. If you want the code to pin it explicitly, that's a small change plus a re-run of the smoke to re-prove; ask and I'll do it.
+The Codex session runs **GPT-5.6** (`gpt-5.6-sol`), and the code now pins it explicitly: both `codex exec` calls pass `--model gpt-5.6-sol` and the analysis provenance records that model. This was implemented via Codex in the build thread (commit `039093e`), so it doubles as real "built with Codex" evidence. README documents it under "How Codex and GPT-5.6 are used" and "Where Codex accelerated the build."
 
 ## Truthfulness guardrails (keep in every field)
 Before/after numbers are single observations under identical recorded settings, not field statistics. The AFTER figure (1.4 MB / 6 s) is a labeled display target; only a genuinely measured, independently re-verified run is approvable. The fixture control plane is labeled and always ends INCONCLUSIVE — it can never reach approval.

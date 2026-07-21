@@ -159,7 +159,11 @@ The model behind every Roveproof session is **GPT-5.6**, reached through the loc
 2. **Failing-test authoring (M5)** — writes a narrow regression test that must fail on the untouched baseline for the intended reason, proven inside a disposable container before any source changes.
 3. **Bounded source authoring (M5)** — only after that failure is proven, a second call writes one bounded source patch. Both authoring calls emit typed unified diffs that run only inside the Docker sandbox.
 
-Roveproof deliberately does not pass `--model` and records `model: null` rather than asserting an identifier the CLI's JSONL never emits (see [ARCHITECTURE](docs/planning/roveproof-mvp-20260718-010659/ARCHITECTURE.md)); the session's model is GPT-5.6. Codex credentials are never read, copied, logged, persisted, or mounted into evidence, candidate workspaces, commands, or sandboxes.
+Roveproof pins the model explicitly to `gpt-5.6-sol` (GPT-5.6) on both `codex exec` calls and records it in analysis provenance. Codex credentials are never read, copied, logged, persisted, or mounted into evidence, candidate workspaces, commands, or sandboxes.
+
+## Where Codex accelerated the build
+
+Codex implemented two focused changes during this session. First, it pinned the analyzer and authoring adapters in `packages/model-adapter` to GPT-5.6 (`gpt-5.6-sol`) and recorded that model identifier in analysis provenance. Second, it fixed an intermittent Windows `EPERM` race in dead-owner worker-lease recovery in `packages/store/src/store.ts`. The recovery now retires a stale lease with an atomic rename before deletion and uses bounded retries for transient Windows file-sharing conflicts, while preserving rejection of live owners and the single-global-lease guarantee. The relevant package builds and targeted test suites passed after these changes.
 
 ## Safety
 
