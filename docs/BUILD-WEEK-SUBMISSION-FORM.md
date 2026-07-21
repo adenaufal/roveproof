@@ -73,7 +73,7 @@ typescript, node.js, next.js, react, playwright, chromium, docker, zod, vitest, 
 
 ### "Try it out" links
 ```
-GitHub repo:  [TODO: paste repo URL]
+GitHub repo:  https://github.com/adenaufal/roveproof
 Landing page: [TODO: paste deployed URL of landing/index.html, if hosted]
 ```
 
@@ -108,7 +108,7 @@ Developer Tools
 
 ### URL to your public or private code repo  *(REQUIRED — README must highlight how Codex & GPT-5.6 were used)*
 ```
-[TODO: paste repo URL]
+https://github.com/adenaufal/roveproof
 ```
 Private repo → share access with `testing@devpost.com` **and** `build-week-event@openai.com`. The README's setup + "How Codex and GPT-5.6 are used" sections are already in place.
 
