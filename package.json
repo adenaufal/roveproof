@@ -1,0 +1,38 @@
+{
+  "name": "roveproof",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.9.8",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build:packages": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/journey && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator",
+    "build": "npm run build:packages && npm run build -w @roveproof/control && npm run build -w @roveproof/target",
+    "typecheck": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator && tsc --noEmit -p tsconfig.json && npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "pretest": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator",
+    "test": "vitest run",
+    "test:integration": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator && vitest run apps/control/test packages/evidence/test packages/model-adapter/test packages/journey/test packages/store/test packages/orchestrator/test packages/sandbox/test",
+    "test:e2e": "npm run evidence:baseline",
+    "test:control:e2e": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator && npm run build -w @roveproof/control && node scripts/run-control-fixture.mjs",
+    "test:model:smoke": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/store && node scripts/run-model-smoke.mjs",
+    "test:repair:smoke": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/sandbox && npm run build -w @roveproof/model-adapter && npm run build -w @roveproof/store && npm run build -w @roveproof/orchestrator && node scripts/run-repair-smoke.mjs",
+    "browser:install": "playwright install chromium",
+    "evidence:baseline": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/journey && npm run build -w @roveproof/target && node scripts/run-baseline.mjs",
+    "demo:preflight": "npm run build -w @roveproof/contracts && npm run build -w @roveproof/evidence && npm run build -w @roveproof/model-adapter && node scripts/demo-preflight.mjs",
+    "demo:reset": "node scripts/demo-reset.mjs"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "overrides": {
+    "postcss": "8.5.19"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

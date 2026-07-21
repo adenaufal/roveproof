@@ -1,0 +1,15 @@
+
+======================================================================
+SKILL AUDIT: product-name
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\product-name
+Overall Risk: LOW
+Recommendation: LIKELY SAFE - Minor concerns noted.
+======================================================================
+
+  [LOW]
+    permissions: No allowed-tools restriction — uses the host agent's default tool policy
+      Location: product-name/SKILL.md
+
+----------------------------------------------------------------------
+Total findings: 1 LOW
+

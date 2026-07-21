@@ -1,0 +1,15 @@
+
+======================================================================
+SKILL AUDIT: better-ui
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\better-ui
+Overall Risk: LOW
+Recommendation: LIKELY SAFE - Minor concerns noted.
+======================================================================
+
+  [LOW]
+    permissions: No allowed-tools restriction — uses the host agent's default tool policy
+      Location: better-ui/SKILL.md
+
+----------------------------------------------------------------------
+Total findings: 1 LOW
+

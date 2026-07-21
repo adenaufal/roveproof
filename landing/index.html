@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Roveproof — Real-world journey CI</title>
+<meta name="description" content="Roveproof reproduces a critical checkout journey under real-world device, network, and locale constraints, grounds a subscription-backed Codex diagnosis in browser evidence, generates a failing-test-first bounded repair, and independently re-proves the fix before a human approves the exact diff hash. Built in Indonesia." />
+<meta property="og:title" content="Roveproof — Real-world journey CI" />
+<meta property="og:description" content="Reproduce a critical journey under real-world constraints, get an evidence-grounded Codex diagnosis, generate a bounded repair, and independently prove it before a human approves the exact diff hash." />
+<meta property="og:type" content="website" />
+<style>
+  :root {
+    color-scheme: light;
+    --field-canvas: #ebe9e1;
+    --evidence-paper: #f8f7f2;
+    --paper-bright: #fffef9;
+    --forest-950: #10231e;
+    --forest-900: #17352d;
+    --forest-800: #21493e;
+    --ink: #17221f;
+    --ink-soft: #44534e;
+    --ink-muted: #4f5f59;
+    --rule: #d4d4ca;
+    --rule-dark: #bcc2b8;
+    --fixture: #7f5412;
+    --fixture-field: #f1e2b9;
+    --failure: #aa4d38;
+    --failure-field: #f4dfd8;
+    --verified: #167665;
+    --verified-field: #dcece7;
+    --focus: #176e80;
+
+    --sans: "Segoe UI Variable","Aptos","Trebuchet MS",sans-serif;
+    --mono: ui-monospace,"Cascadia Code",monospace;
+
+    --ease: cubic-bezier(0.23,1,0.32,1);
+    --shadow: 0 18px 50px rgba(24,40,34,0.08);
+    --maxw: 1120px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--field-canvas);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { color: var(--forest-900); font-weight: 700; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+
+  a { color: var(--focus); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+  .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* Brand-signature label */
+  .label {
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--ink-muted);
+  }
+  .label--10 { font-size: 10px; }
+
+  .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- Header ---------- */
+  header.site {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(235,233,225,0.88);
+    backdrop-filter: saturate(120%) blur(8px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 62px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 30px; height: 30px;
+    background: var(--forest-900);
+    color: var(--paper-bright);
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .brand-name { font-weight: 700; color: var(--forest-900); font-size: 17px; letter-spacing: -0.01em; line-height: 1.05; }
+  .brand-tag { display: block; }
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .header-right .built { color: var(--ink-soft); }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border: 1px solid var(--rule-dark);
+    background: var(--evidence-paper);
+    border-radius: 999px;
+    padding: 5px 12px;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .badge::before {
+    content: "";
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--verified);
+  }
+
+  /* ---------- Section scaffolding ---------- */
+  main section { border-bottom: 1px solid var(--rule); }
+  .sec-pad { padding: 72px 0; }
+  .eyebrow { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .eyebrow .num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 650;
+    color: var(--forest-800);
+    border: 1px solid var(--rule-dark);
+    background: var(--evidence-paper);
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 76px 0 80px; background: linear-gradient(180deg, var(--evidence-paper), var(--field-canvas)); }
+  .hero h1 { font-size: clamp(30px, 5vw, 50px); max-width: 20ch; margin-bottom: 22px; }
+  .hero .sub { font-size: clamp(16px, 2vw, 19px); color: var(--ink-soft); max-width: 62ch; margin: 0 0 40px; }
+  .hero .lead-label { margin-bottom: 22px; }
+
+  /* Ledger */
+  .ledger {
+    background: var(--paper-bright);
+    border: 1px solid var(--rule-dark);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    max-width: 760px;
+  }
+  .ledger-head {
+    display: grid;
+    grid-template-columns: 1.4fr 1.6fr 1fr 0.9fr;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--rule);
+    background: var(--evidence-paper);
+  }
+  .ledger-head span { color: var(--ink-muted); }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1.6fr 1fr 0.9fr;
+    gap: 12px;
+    align-items: center;
+    padding: 20px;
+  }
+  .ledger-row + .ledger-row { border-top: 1px solid var(--rule); }
+  .ledger-row .state {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ledger-row .state::before { content: ""; width: 9px; height: 9px; border-radius: 999px; }
+  .ledger-row .outcome { color: var(--ink); font-weight: 600; }
+  .ledger-row .num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: clamp(18px, 2.4vw, 24px); font-weight: 700; }
+
+  .row-before { background: var(--failure-field); }
+  .row-before .state { color: var(--failure); }
+  .row-before .state::before { background: var(--failure); }
+  .row-before .num { color: var(--failure); }
+
+  .row-after { background: var(--verified-field); }
+  .row-after .state { color: var(--verified); }
+  .row-after .state::before { background: var(--verified); }
+  .row-after .num { color: var(--verified); }
+
+  .ledger-caption { color: var(--ink-muted); font-size: 13px; margin: 16px 2px 0; max-width: 760px; }
+
+  /* ---------- Problem ---------- */
+  .problem-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; }
+  .problem h2 { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 18px; max-width: 18ch; }
+  .problem p { color: var(--ink-soft); margin: 0 0 16px; max-width: 54ch; }
+  .reality-card {
+    background: var(--evidence-paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .reality-card .label { margin-bottom: 14px; display: block; }
+  .reality-list { list-style: none; margin: 0; padding: 0; }
+  .reality-list li {
+    display: flex;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--rule);
+    font-size: 14.5px;
+  }
+  .reality-list li:first-child { border-top: none; }
+  .reality-list .k { font-family: var(--mono); color: var(--forest-800); font-size: 12.5px; font-weight: 650; min-width: 116px; flex-shrink: 0; padding-top: 1px; }
+  .reality-list .v { color: var(--ink-soft); }
+
+  /* ---------- Pipeline ---------- */
+  .pipeline h2 { font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 14px; }
+  .pipeline .intro { color: var(--ink-soft); max-width: 60ch; margin: 0 0 40px; }
+  .chain { display: grid; gap: 18px; }
+  .stage {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    background: var(--evidence-paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 24px;
+    position: relative;
+  }
+  .stage .idx {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--paper-bright);
+    background: var(--forest-900);
+    border-radius: 8px;
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+  }
+  .stage h3 { font-size: 18px; margin-bottom: 8px; }
+  .stage p { color: var(--ink-soft); margin: 0 0 14px; font-size: 15px; max-width: 62ch; }
+  .stage .artifact {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--forest-800);
+    background: var(--paper-bright);
+    border: 1px solid var(--rule-dark);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stage .artifact::before { content: "↳"; color: var(--ink-muted); }
+  .binding {
+    margin-top: 34px;
+    border: 1px solid var(--rule-dark);
+    border-left: 3px solid var(--forest-800);
+    background: var(--evidence-paper);
+    border-radius: 8px;
+    padding: 18px 22px;
+    color: var(--ink-soft);
+    font-size: 14.5px;
+  }
+  .binding strong { color: var(--forest-900); }
+  .binding .mono { color: var(--fixture); }
+
+  /* ---------- Safety ---------- */
+  .safety { background: var(--forest-950); color: #dfe7e2; border-bottom: none; }
+  .safety h2 { color: var(--paper-bright); font-size: clamp(24px, 3.4vw, 34px); margin-bottom: 14px; }
+  .safety .intro { color: #a9bbb2; max-width: 60ch; margin: 0 0 40px; }
+  .safety .eyebrow .num { color: #cfe0d8; border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); }
+  .safety .label { color: #93a89e; }
+  .safety-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .safety-cell { background: var(--forest-950); padding: 24px; }
+  .safety-cell .label { color: var(--verified); margin-bottom: 12px; display: block; }
+  .safety-cell h3 { color: var(--paper-bright); font-size: 16px; margin-bottom: 8px; }
+  .safety-cell p { color: #9fb2a9; font-size: 14px; margin: 0; }
+  .safety-cell .mono { color: #e8b45c; }
+
+  /* ---------- Footer ---------- */
+  footer.site { background: var(--forest-900); color: #cbd8d1; padding: 54px 0; }
+  .footer-inner { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; justify-content: space-between; }
+  footer .foot-lead { color: var(--paper-bright); font-size: 20px; font-weight: 700; max-width: 26ch; line-height: 1.25; }
+  footer .foot-meta { display: flex; flex-direction: column; gap: 10px; }
+  footer .foot-meta .label { color: #8ba398; }
+  footer .foot-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  footer a { color: #a7d8cd; }
+  footer .foot-line { color: #8ba398; font-size: 13px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    .problem-grid { grid-template-columns: 1fr; gap: 28px; }
+    .safety-grid { grid-template-columns: repeat(2, 1fr); }
+    .header-right .built { display: none; }
+  }
+  @media (max-width: 620px) {
+    .sec-pad { padding: 52px 0; }
+    .hero { padding: 52px 0 56px; }
+    .ledger-head { display: none; }
+    .ledger-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      row-gap: 4px;
+    }
+    .ledger-row .num { font-size: 22px; }
+    .ledger-row .num-nets::after { content: " encoded"; font-size: 11px; color: var(--ink-muted); font-weight: 500; }
+    .ledger-row .num-secs::after { content: " duration"; font-size: 11px; color: var(--ink-muted); font-weight: 500; }
+    .safety-grid { grid-template-columns: 1fr; }
+    .stage { grid-template-columns: 1fr; gap: 14px; }
+    .stage .idx { width: 40px; height: 40px; font-size: 18px; }
+    .brand-tag { display: none; }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(12px); animation: rise 460ms var(--ease) forwards; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="Roveproof home">
+      <span class="mark" role="img" aria-label="Roveproof mark">R</span>
+      <span>
+        <span class="brand-name">Roveproof</span>
+        <span class="brand-tag label label--10">Real-world journey CI</span>
+      </span>
+    </a>
+    <div class="header-right">
+      <span class="built label">Built in Indonesia</span>
+      <span class="badge">OpenAI Build Week · Developer Tools</span>
+      <a href="#" rel="noopener">Repository</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap">
+      <p class="lead-label label">Reproduce · Diagnose · Repair · Prove</p>
+      <h1 id="hero-h">Real-world journey CI: prove a critical journey survives the constraints your test matrix never represents.</h1>
+      <p class="sub">Roveproof reproduces a checkout journey under real-world device, network, and locale constraints, grounds a subscription-backed Codex diagnosis in browser evidence, generates a failing-test-first bounded repair as typed diffs, and independently re-proves the fix in an isolated sandbox before a human approves the exact diff hash.</p>
+
+      <div class="ledger reveal" role="table" aria-label="Before and after checkout ledger">
+        <div class="ledger-head label" role="row">
+          <span role="columnheader">Run</span>
+          <span role="columnheader">Outcome</span>
+          <span role="columnheader">Encoded transfer</span>
+          <span role="columnheader">Duration</span>
+        </div>
+        <div class="ledger-row row-before" role="row">
+          <span class="state" role="cell">Before</span>
+          <span class="outcome" role="cell">checkout failed</span>
+          <span class="num num-nets" role="cell">8.2 MB</span>
+          <span class="num num-secs" role="cell">19 s</span>
+        </div>
+        <div class="ledger-row row-after" role="row">
+          <span class="state" role="cell">After</span>
+          <span class="outcome" role="cell">checkout succeeded</span>
+          <span class="num num-nets" role="cell">1.4 MB</span>
+          <span class="num num-secs" role="cell">6 s</span>
+        </div>
+      </div>
+      <p class="ledger-caption">Measured single-run observations under identical recorded constraints — not field statistics. The <span class="mono">8.2&nbsp;MB / 19&nbsp;s</span> baseline is the anchored failing checkout; the after figure is a labeled display target, and only the independent verification run is approvable evidence.</p>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="problem sec-pad" aria-labelledby="problem-h">
+    <div class="wrap problem-grid">
+      <div>
+        <div class="eyebrow"><span class="num">01</span><span class="label">The problem</span></div>
+        <h2 id="problem-h">The failures that hit real users stay invisible until production.</h2>
+        <p>Teams validate checkout on fast devices, reliable networks, English-centric identity formats, and familiar address systems. The failures that hit low-end CPUs, constrained mobile networks, mononyms, <span class="mono">+62</span> phone numbers, IDR, and Jakarta date/time semantics never show up in the normal test matrix.</p>
+        <p>Roveproof is CI for exactly those users — the ones a team's default matrix never represents. The Build Week MVP reproduces one seeded checkout under the pinned <span class="mono">indonesia-mobile-v1</span> profile.</p>
+      </div>
+      <aside class="reality-card" aria-label="Indonesia Mobile profile">
+        <span class="label">Profile · indonesia-mobile-v1</span>
+        <ul class="reality-list">
+          <li><span class="k">viewport</span><span class="v">360 × 800</span></li>
+          <li><span class="k">locale</span><span class="v">id-ID · IDR currency</span></li>
+          <li><span class="k">timezone</span><span class="v">Asia/Jakarta</span></li>
+          <li><span class="k">cpu</span><span class="v">4× slowdown, low-end</span></li>
+          <li><span class="k">network</span><span class="v">constrained-3G schedule</span></li>
+          <li><span class="k">seeded #1</span><span class="v">required-last-name mononym rejection</span></li>
+          <li><span class="k">seeded #2</span><span class="v">+62 phone normalization bug</span></li>
+          <li><span class="k">seeded #3</span><span class="v">oversized mobile checkout bundle</span></li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section class="pipeline sec-pad" aria-labelledby="pipeline-h">
+    <div class="wrap">
+      <div class="eyebrow"><span class="num">02</span><span class="label">The pipeline</span></div>
+      <h2 id="pipeline-h">An evidence-to-decision chain.</h2>
+      <p class="intro">Each stage is bound to the previous by explicit IDs and hashes — no <span class="mono">latest</span>, fixture, or implicit fallback anywhere in the real path.</p>
+
+      <div class="chain">
+        <article class="stage">
+          <div class="idx" aria-hidden="true">1</div>
+          <div>
+            <h3>Constrained journey CI</h3>
+            <p>Runs the pinned Chromium Indonesia Mobile profile against the synthetic target and writes an immutable, hashed evidence bundle: screenshots, trace, HAR, console, requests, assertions, timing, and encoded bytes — anchored to an external trust root.</p>
+            <span class="artifact mono">immutable hashed evidence bundle</span>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div class="idx" aria-hidden="true">2</div>
+          <div>
+            <h3>Subscription-backed Codex diagnosis</h3>
+            <p>One ephemeral, read-only, shell-disabled <span class="mono">codex exec</span> call returns schema-validated hypotheses — each cited to specific evidence artifacts, with falsifiers and stated uncertainty. Captured pages and repository text are untrusted data, never instructions.</p>
+            <span class="artifact mono">analysisId · analysisHash · cited to evidence</span>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div class="idx" aria-hidden="true">3</div>
+          <div>
+            <h3>Failing-test-first bounded repair</h3>
+            <p>A read-only call authors a regression test that must fail on the untouched baseline for the intended reason; only then does a second read-only call author one bounded source patch. Both are typed unified diffs, applied and run only inside the isolated sandbox.</p>
+            <span class="artifact mono">candidateId · test / source / combined diff hashes</span>
+          </div>
+        </article>
+
+        <article class="stage">
+          <div class="idx" aria-hidden="true">4</div>
+          <div>
+            <h3>Independent hash-bound verified approval</h3>
+            <p>A fresh verifier workspace — distinct from the author sandbox, making no model call — reapplies the exact combined diff, re-verifies its hash, and reruns the original journey/profile/oracle. A human then approves or rejects the exact <span class="mono">candidateId</span> + <span class="mono">combinedDiffHash</span>.</p>
+            <span class="artifact mono">READY_FOR_HUMAN_REVIEW · exact diff exported only</span>
+          </div>
+        </article>
+      </div>
+
+      <p class="binding"><strong>Chain of custody.</strong> Every stage consumes the previous stage's printed IDs and hashes verbatim. A stale or mismatched hash is rejected; uncertain evidence stays <span class="mono">INCONCLUSIVE</span> or <span class="mono">REJECTED</span> — never PASS.</p>
+    </div>
+  </section>
+
+  <!-- SAFETY -->
+  <section class="safety sec-pad" aria-labelledby="safety-h">
+    <div class="wrap">
+      <div class="eyebrow"><span class="num">03</span><span class="label">The safety model</span></div>
+      <h2 id="safety-h">Generated code is a candidate, not a trusted fix.</h2>
+      <p class="intro">Safety is enforcement, not prompts. The boundary is the container and the hash — not a request in a system message.</p>
+
+      <div class="safety-grid">
+        <div class="safety-cell">
+          <span class="label">Isolation</span>
+          <h3>Docker sandbox only</h3>
+          <p>All generated code runs in a pinned-image container: <span class="mono">--network none</span>, read-only root, dropped capabilities, bounded PID/memory/CPU/time. Never on the host.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Credentials</span>
+          <h3>No host secrets</h3>
+          <p>Sandbox and verifier receive no host secrets, home, or auth mounts. Outbound network is denied by default.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Model access</span>
+          <h3>ChatGPT-login only</h3>
+          <p>Local Codex CLI via Sign in with ChatGPT — no OpenAI Platform API billing. <span class="mono">OPENAI_API_KEY</span>, <span class="mono">CODEX_API_KEY</span>, and <span class="mono">CODEX_ACCESS_TOKEN</span> are rejected even when empty.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Scope</span>
+          <h3>One bounded candidate</h3>
+          <p>A single repair attempt capped at <span class="mono">≤5 files</span> and <span class="mono">≤250 changed lines</span>. No dependencies, lockfiles, CI, infra, migrations, secrets, or verifier weakening.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Provenance</span>
+          <h3>Write-once, hash-bound</h3>
+          <p>Snapshots, results, evidence, proof bytes, diffs, and terminal status are persisted immutably and cross-bound by hash, so every claim reads back independently.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Failure posture</span>
+          <h3>Fail-closed</h3>
+          <p>Missing, contradictory, tampered, timed-out, or uncertain evidence stays <span class="mono">INCONCLUSIVE</span> or <span class="mono">REJECTED</span> — never promoted to PASS.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Approval</span>
+          <h3>Hash-bound human decision</h3>
+          <p>Approval binds to the exact <span class="mono">candidateId</span> + current <span class="mono">combinedDiffHash</span>, and exports the verified diff and rollback handle only — it never merges or deploys.</p>
+        </div>
+        <div class="safety-cell">
+          <span class="label">Fixture plane</span>
+          <h3>Labeled, unapprovable</h3>
+          <p>The fixture control plane is conspicuously labeled and terminates as <span class="mono">INCONCLUSIVE</span>. Fixture-mode candidates can never reach approval.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site" aria-label="Site footer">
+  <div class="wrap footer-inner">
+    <div>
+      <div class="foot-brand">
+        <span class="mark" role="img" aria-label="Roveproof mark">R</span>
+        <span class="brand-name" style="color:var(--paper-bright)">Roveproof</span>
+      </div>
+      <p class="foot-lead">Built in Indonesia to test software for the realities of the world.</p>
+    </div>
+    <div class="foot-meta">
+      <span class="label">Submission</span>
+      <span>OpenAI Build Week</span>
+      <span>Track · Developer Tools</span>
+      <span><a href="#" rel="noopener">View the repository</a></span>
+      <span class="foot-line">Before/after figures are single measured observations under identical recorded constraints, never field statistics.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

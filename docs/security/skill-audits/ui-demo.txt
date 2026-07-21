@@ -1,0 +1,20 @@
+
+======================================================================
+SKILL AUDIT: ui-demo
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\ui-demo
+Overall Risk: CRITICAL
+Recommendation: DANGEROUS - Do NOT use. Delete immediately.
+======================================================================
+
+  [CRITICAL]
+    credential-theft: .env file access
+      Location: ui-demo/SKILL.md:361
+      Match: const BASE_URL = process.env.QA_BASE_URL || 'http://localhost:3000';
+
+  [LOW]
+    permissions: No allowed-tools restriction — uses the host agent's default tool policy
+      Location: ui-demo/SKILL.md
+
+----------------------------------------------------------------------
+Total findings: 1 CRITICAL, 1 LOW
+

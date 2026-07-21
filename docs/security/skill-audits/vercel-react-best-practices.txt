@@ -1,0 +1,47 @@
+
+======================================================================
+SKILL AUDIT: vercel-react-best-practices
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\vercel-react-best-practices
+Overall Risk: CRITICAL
+Recommendation: DANGEROUS - Do NOT use. Delete immediately.
+======================================================================
+
+  [CRITICAL]
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\AGENTS.md:945
+      Match: const fontData = await fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\AGENTS.md:949
+      Match: const logoData = await fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\AGENTS.md:970
+      Match: const fontData = fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\AGENTS.md:974
+      Match: const logoData = fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\AGENTS.md:1498
+      Match: fetch('/api/users')
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\rules\client-swr-dedup.md:18
+      Match: fetch('/api/users')
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\rules\server-hoist-static-io.md:22
+      Match: const fontData = await fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\rules\server-hoist-static-io.md:26
+      Match: const logoData = await fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\rules\server-hoist-static-io.md:47
+      Match: const fontData = fetch(
+    data-exfiltration: HTTP data sending capability
+      Location: vercel-react-best-practices\rules\server-hoist-static-io.md:51
+      Match: const logoData = fetch(
+
+  [LOW]
+    permissions: No allowed-tools restriction — uses the host agent's default tool policy
+      Location: vercel-react-best-practices/SKILL.md
+
+----------------------------------------------------------------------
+Total findings: 10 CRITICAL, 1 LOW
+

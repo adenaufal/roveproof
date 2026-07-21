@@ -1,0 +1,21 @@
+
+======================================================================
+SKILL AUDIT: verified-codex-patch-loop
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\verified-codex-patch-loop
+Overall Risk: CRITICAL
+Recommendation: DANGEROUS - Do NOT use. Delete immediately.
+======================================================================
+
+  [CRITICAL]
+    credential-theft: .env file access
+      Location: verified-codex-patch-loop/SKILL.md:98
+      Match: - no mount of home directories, SSH agents, cloud config, browser profiles, or `.env` files;
+
+  [MEDIUM]
+    permissions: Grants access to powerful tools: bash, edit, write
+      Location: verified-codex-patch-loop/SKILL.md
+      Match: read grep find ls bash edit write
+
+----------------------------------------------------------------------
+Total findings: 1 CRITICAL, 1 MEDIUM
+

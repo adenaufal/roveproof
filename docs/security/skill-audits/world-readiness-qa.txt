@@ -1,0 +1,19 @@
+
+======================================================================
+SKILL AUDIT: world-readiness-qa
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\world-readiness-qa
+Overall Risk: MEDIUM
+Recommendation: REVIEW NEEDED - Inspect flagged items before using.
+======================================================================
+
+  [MEDIUM]
+    prompt-injection: Covert action instruction
+      Location: world-readiness-qa/SKILL.md:69
+      Match: Do not secretly change seed behavior between before and after runs.
+    permissions: Grants access to powerful tools: bash, mcp
+      Location: world-readiness-qa/SKILL.md
+      Match: read grep find ls bash mcp
+
+----------------------------------------------------------------------
+Total findings: 2 MEDIUM
+

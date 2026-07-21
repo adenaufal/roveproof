@@ -1,0 +1,38 @@
+{
+  "id": "indonesia-mobile-v1",
+  "browser": "chromium",
+  "viewport": { "width": 360, "height": 800 },
+  "deviceScaleFactor": 2,
+  "isMobile": true,
+  "hasTouch": true,
+  "locale": "id-ID",
+  "timezoneId": "Asia/Jakarta",
+  "acceptLanguage": "id-ID,id;q=0.9,en;q=0.8",
+  "cpuSlowdownMultiplier": 4,
+  "network": {
+    "profile": "flaky-3g-v1",
+    "offline": false,
+    "latencyMs": 300,
+    "downloadBitsPerSecond": 3600000,
+    "uploadBitsPerSecond": 750000
+  },
+  "jitter": {
+    "schedule": "deterministic-jitter-v1",
+    "events": [
+      {
+        "phase": "degraded",
+        "atMs": 0,
+        "latencyMs": 450,
+        "downloadBitsPerSecond": 2400000,
+        "uploadBitsPerSecond": 500000
+      },
+      {
+        "phase": "restored",
+        "atMs": 250,
+        "latencyMs": 300,
+        "downloadBitsPerSecond": 3600000,
+        "uploadBitsPerSecond": 750000
+      }
+    ]
+  }
+}

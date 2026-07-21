@@ -1,0 +1,12 @@
+var/
+node_modules/
+**/node_modules/
+**/dist/
+**/.next/
+.git/
+*.tsbuildinfo
+NUL
+.agents/
+.claude/
+.pi-subagents/
+skills-lock.json

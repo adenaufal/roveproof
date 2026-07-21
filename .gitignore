@@ -1,0 +1,41 @@
+node_modules/
+.next/
+dist/
+build/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+var/roveproof/
+artifacts/
+*.webm
+*.mp4
+*.log
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# scratch / local command logs
+t_*.txt
+*local-command*.txt
+NUL
+
+# local agent + dev tooling (not part of the project)
+.agents/
+.claude/
+.headroom/
+.tokensave/
+skills-lock.json
+
+# internal handoff memo (kept on disk, out of the submission repo)
+HANDOFF.md
+
+# local Codex CLI config (leaks local user path) + dropped Devpost screenshots
+.codex/
+/1.png
+/2.png
+/3.png
+/4.png

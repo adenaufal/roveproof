@@ -1,0 +1,20 @@
+
+======================================================================
+SKILL AUDIT: core-web-vitals
+Path: F:\dev\projects\adenaufal\ade-playground\ade\openai-build-week\.agents\skills\core-web-vitals
+Overall Risk: CRITICAL
+Recommendation: DANGEROUS - Do NOT use. Delete immediately.
+======================================================================
+
+  [CRITICAL]
+    data-exfiltration: HTTP data sending capability
+      Location: core-web-vitals/SKILL.md:66
+      Match: fetch('/api/hero-text').then(r => r.json()).then(setHeroText);
+
+  [LOW]
+    permissions: No allowed-tools restriction — uses the host agent's default tool policy
+      Location: core-web-vitals/SKILL.md
+
+----------------------------------------------------------------------
+Total findings: 1 CRITICAL, 1 LOW
+
