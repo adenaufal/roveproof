@@ -10,7 +10,6 @@ import {
 	realpath,
 	rename,
 	rm,
-	unlink,
 } from "node:fs/promises";
 import path from "node:path";
 import {
@@ -2374,6 +2373,7 @@ export class FileControlStore {
 			throw error;
 		}
 
+		const retiredPath = `${claimPath}.retired`;
 		try {
 			const [claimMetadata, currentMetadata, claimed] = await Promise.all([
 				lstat(claimPath),
@@ -2389,13 +2389,31 @@ export class FileControlStore {
 				return false;
 			}
 			if (processIsAlive(claimed.pid)) return false;
-			await unlink(leasePath);
+			for (let attempt = 0; ; attempt += 1) {
+				try {
+					await rename(leasePath, retiredPath);
+					break;
+				} catch (error) {
+					if (errorCode(error) === "ENOENT") return true;
+					const transientWindowsConflict =
+						process.platform === "win32" &&
+						["EACCES", "EBUSY", "EPERM"].includes(errorCode(error) ?? "");
+					if (!transientWindowsConflict) throw error;
+					if (attempt >= 20) return false;
+					await new Promise((resolve) =>
+						setTimeout(resolve, Math.min(25 * (attempt + 1), 250)),
+					);
+				}
+			}
 			return true;
 		} catch (error) {
 			if (errorCode(error) === "ENOENT") return true;
 			throw error;
 		} finally {
-			await rm(claimPath, { force: true });
+			await Promise.all([
+				rm(claimPath, { force: true }),
+				rm(retiredPath, { force: true }),
+			]);
 		}
 	}
 
